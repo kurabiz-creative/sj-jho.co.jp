@@ -1,3 +1,6 @@
+@charset "utf-8";
+@use "./common/config" as conf;
+
 /*
     base：従来のreset.cssのようなもののみ（★★:root以外は基本的に編集しない★★）
     ※tailwindcssのBase Styles（https://v3.tailwindcss.com/docs/preflight）
@@ -9,8 +12,7 @@
         scrollbar-gutter: stable;
     }
     body {
-        /* @apply text-basic font-sans tracking-wider antialiased overflow-x-hidden */
-        @apply text-basic font-sans antialiased overflow-x-hidden relative w-full leading-relaxed;
+        @apply text-basic font-sans font-medium antialiased overflow-x-hidden relative w-full leading-[1.8];
         letter-spacing: 0;
         word-wrap: break-word;
         overflow-wrap: anywhere;
@@ -32,7 +34,7 @@
         @apply transition-all duration-300 hover:text-main
     }
     img {
-        @apply w-auto;
+        @apply max-w-full;
     }
 
     /* S: form関係 */

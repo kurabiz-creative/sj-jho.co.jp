@@ -1,0 +1,113 @@
+@charset "UTF-8";
+@use "sass:string";
+@use "sass:meta";
+@use "sass:map";
+@use "sass:math";
+
+/* ※画像関係の変数はmeta.phpから（WPやPHPの変数が効かない為） */
+:root {
+    --origin-width: 1366;
+    --header-h: 6.25rem; /* 100px */
+    --header-h-sp: 3.375rem; /* 54px */
+    --header-bot-h: 6rem; /* 96px */
+
+    --header-scroll-h: 4.6875rem; /* 75px */
+    --header-bot-scroll-h: 3.75rem; /* 60px */
+    --header-scroll-total: calc(var(--header-scroll-h) + var(--header-bot-scroll-h)); /* 135px */
+
+    --fixed-btn-h-sp: 3.125rem; /* 50px */
+
+    /* font */
+    --font-sans: "Zen Kaku Gothic New", "游ゴシック体", "Yu Gothic", 'YuGothic', "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro", "メイリオ", 'Meiryo', "MS Pゴシック", "MS PGothic", 'sans-serif';
+    // --font-inter: "Inter", sans-serif;
+    --font-mont: "Montserrat", sans-serif;
+
+    /* color */
+    --color-basic: #404040;
+    --color-main: #007e79;
+    --color-accent: #52a0a0;
+    --color-green: #aed057;
+    --color-green2: #a0ba52;
+    --color-light-green: #eff2d3;
+    --color-dark-green: #33686f;
+    --color-dark-green2: #175e59;
+    --color-light-gray: #f4f5ee;
+    --color-accent-link: #68a8dd;
+
+    /* エディター */
+    --post-font: var(--font-sans);
+    --post-theme-color: var(--color-main);
+}
+
+// ==================================================
+// ** responsive_config
+// ==================================================
+@mixin mq($min:0, $max:0, $mode:'screen') {
+	$bp_min: '';
+	$bp_max: '';
+	@if $min > 0 {
+		$bp_min: ' and (min-width:#{$min}px)';
+	}
+	@if $max > 0 {
+		$bp_max: ' and (max-width:#{$max - 1}px)';
+	}
+	@media #{$mode}#{$bp_min}#{$bp_max} {
+		@content;
+	}
+}
+
+// ==================================================
+// ** ヘジュ_config
+// ==================================================
+// font size px → em / rem
+@function em($px, $base: 16) {
+  @return calc($px / $base) * 1em;
+}
+@function rem($px, $base: 16) {
+  @return calc($px / $base) * 1rem;
+}
+// for calc
+@mixin ratio($width, $height){
+  aspect-ratio: calc($width / $height) / 1;
+}
+// text
+@mixin leadingTrim($lin) {
+  &::before,
+  &::after {
+    content: '';
+    display: block;
+    inline-size: 0;
+    block-size: 1px; // marginが貫通しないようにする
+  }
+  // 前の要素との相殺を防ぐために::beforeに`margin-block-end`、::afterに`margin-block-start`を指定する
+  &::before {
+    margin-block-end: calc((1 - #{$lin}) * 0.5em);
+  }
+  &::after {
+    margin-block-start: calc((1 - #{$lin}) * 0.5em);
+  }
+}
+// 共通アイコン
+@function remove-hash($color) {
+  @return string.slice(meta.inspect($color), 2);
+}
+@function svg-encode($color) {
+    @if $color == none {
+        @return 'none';
+    } @else if $color == currentColor {
+        @return 'currentColor';
+    } @else {
+        @return '%23#{remove-hash($color)}';
+    }
+}
+@mixin icon-mask($maskImgUrl, $color: var(--color-basic)){
+    -webkit-mask-image: $maskImgUrl;
+    mask-image: $maskImgUrl;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    mask-position: center;
+    background-color: $color;
+}

@@ -12,7 +12,7 @@ module.exports = {
             'md': '768px',   // ユーザー指定のBP
             'lg': '992px',   // ユーザー指定のBP
             'xl': '1200px',  // ユーザー指定のBP
-            '2xl': '1367px', // ユーザー指定のBP
+            '2xl': '1366px', // ユーザー指定のBP
             '3xl': '1500px', // ユーザー指定のBP
         },
         // .container クラスのカスタマイズ
@@ -38,7 +38,8 @@ module.exports = {
                 'basic': '#404040',
                 'main': '#007e79',
                 'accent': '#52a0a0',
-                'green': '#a0ba52',
+                'green': '#aed057',
+                'green2': '#a0ba52',
                 'light-green': '#eff2d3',
                 'dark-green': '#33686f',
                 'dark-green2': '#175e59',
@@ -116,23 +117,10 @@ module.exports = {
                 ]
             },
             keyframes: {
-                shiny: {
-                    '0%': {
-                        transform: 'scale(0) rotate(25deg)',
-                        opacity: '0',
-                    },
-                    '10%': {
-                        transform: 'scale(1) rotate(25deg)',
-                        opacity: '1',
-                    },
-                    '100%': {
-                        transform: 'scale(50) rotate(25deg)',
-                        opacity: '0',
-                    },
-                },
+
             },
             animation: {
-                shiny: 'shiny 3s ease-in-out infinite',
+
             },
         },
     },

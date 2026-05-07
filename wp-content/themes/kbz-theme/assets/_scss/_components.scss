@@ -1,3 +1,6 @@
+@charset "utf-8";
+@use "./common/config" as conf;
+
 /*
     components：共通のパーツのみ
 */
@@ -18,9 +21,9 @@
         display: none !important;
     }
 
-    /* .breadcrumbs > * {
+    .breadcrumbs > * {
         @apply inline-flex items-center
-    } */
+    }
 
     /*==================================================
     ** icon
@@ -33,48 +36,52 @@
     ** button
     ==================================================*/
     .m-btn {
-        @apply relative overflow-hidden inline-flex align-top text-white hover:text-white
-        w-auto h-[3.125em] px-[1.125em] leading-normal
-        transition-all duration-500;
-    }
+        @apply relative overflow-hidden inline-flex align-top items-center w-auto h-[2.86em] px-[1.143em] leading-snug text-left border rounded-full transition-all duration-300;
 
-    .m-btn.bg-grad-green {
-        @apply bg-gradient-to-r from-gradient-green-end via-gradient-green-start to-gradient-green-end
-        bg-[position:100%_50%] bg-[size:300%_100%];
-    }
-    .m-btn.bg-grad-orange {
-        @apply bg-gradient-to-r from-gradient-orange-end via-gradient-orange-start to-gradient-orange-end
-        bg-[position:100%_50%] bg-[size:300%_100%];
-    }
-    .m-btn.bg-grad-pink {
-        @apply bg-gradient-to-r from-gradient-pink-end via-gradient-pink-start to-gradient-pink-end
-        bg-[position:100%_50%] bg-[size:300%_100%];
-    }
-    .m-btn.bg-grad-green:not(.no-hover-grad),
-    .m-btn.bg-grad-orange:not(.no-hover-grad),
-    .m-btn.bg-grad-pink:not(.no-hover-grad) {
-        @apply hover:bg-[position:0_50%];
-    }
+        .m-arr {
+            @apply relative right-0 flex-none rounded-full border transition-all duration-300;
 
-    .m-btn[disabled],
-    .m-btn.is-disabled {
-        @apply pointer-events-none from-[#ECECEC] via-[#CFCFCF] to-[#ECECEC];
-    }
+            .arr {
+                @apply absolute left-[calc(50%-1px)] top-1/2 -translate-x-1/2 -translate-y-1/2 aspect-square w-[26%] border-t border-r rotate-45 transition-all duration-300;
+            }
+        }
 
-    .m-btn .m-ico {
-        @apply right-0 flex-none w-[1.125em] h-[1.125em] ml-[0.625em] duration-[400ms];
-    }
-    .m-btn:has(input),
-    .m-btn:has(button[type="submit"]) {
-        @apply p-0 border-0;
-    }
-    .m-btn:has(input) .m-ico ,
-    .m-btn:has(button[type="submit"]) .m-ico {
-        @apply absolute right-[1.125em] inset-y-0 my-auto;
-    }
-    .m-btn input,
-    .m-btn button[type="submit"] {
-        @apply z-[1] pl-[1.125em] pr-[2.875em] flex-grow self-stretch bg-transparent whitespace-normal leading-[inherit];
+        &:has(.m-arr){
+            @apply pr-[0.7143em];
+        }
+
+        // input
+        input,
+        [type="submit"] {
+            @apply z-[1] pl-[1.125em] px-[1.143em] flex-grow self-stretch bg-transparent whitespace-normal leading-[inherit] rounded-full;
+        }
+        &:has(input),
+        &:has([type="submit"]) {
+            @apply p-0;
+
+            .m-arr {
+                @apply absolute right-[0.7143em] inset-y-0 top-px my-auto;
+            }
+
+            &:has(.m-arr){
+                input,
+                [type="submit"] {
+                    @apply pr-[2.85em];
+                }
+            }
+        }
+
+        // disabled
+        &[disabled],
+        &.is-disabled {
+            @apply pointer-events-none bg-gray-300 border-gray-300 text-gray-500;
+
+            .m-arr {
+                .arr {
+                    @apply border-gray-300;
+                }
+            }
+        }
     }
 
 
@@ -83,19 +90,22 @@
     ==================================================*/
     .m-ul-list {
         @apply pl-[1em] indent-[-1em] space-y-[0.25em];
-    }
-    .m-ul-list > li::before {
-        content: "・";
+
+        > li::before {
+            content: "・";
+        }
     }
 
     .m-ol-list {
         @apply pl-[1.25em] list-decimal space-y-[0.25em];
     }
 
-    .m-ul-list a,
-    .m-ol-list a {
-        @apply inline underline opacity-100 hover:opacity-70;
-        color: var(--color-accent-link);
+    .m-ul-list,
+    .m-ol-list {
+        a {
+            @apply inline underline opacity-100 hover:opacity-70;
+            color: var(--color-accent-link);
+        }
     }
 
     .m-notice-text {
@@ -108,40 +118,184 @@
     ** table
     ==================================================*/
     /* デフォルトテーブル */
-    .m-tbl table {
-        @apply w-full table-fixed;
+    .m-tbl {
+        table {
+            @apply w-full table-fixed;
+        }
+        caption {
+            @apply sr-only;
+        }
+        th {
+            @apply relative font-medium border-b border-main;
+        }
+        td {
+            @apply relative border-b border-[#D4E6E3] px-1.5;
+        }
+        th, td {
+            @apply py-4 md:py-6;
+
+            a {
+                @apply underline text-accent-link hover:text-main;
+            }
+        }
+
+        &.type-row-xs {
+            colgroup, thead {
+                @apply sr-only sm:not-sr-only;
+            }
+
+            th {
+                @apply pb-1.5 sm:py-4 md:py-6 border-b-0 sm:border-b;
+            }
+            td {
+                @apply pt-0 sm:py-4 md:py-6 border-main sm:border-[#D4E6E3];
+            }
+
+            th, td {
+                @apply max-sm:block max-sm:w-full max-sm:px-3.5;
+            }
+        }
     }
-    .m-tbl caption {
-        @apply sr-only;
-    }
-    .m-tbl th {
-        @apply relative font-medium border-b border-main;
-    }
-    .m-tbl td {
-        @apply relative border-b border-[#D4E6E3] px-1.5;
-    }
-    .m-tbl td a {
-        @apply underline text-accent-link hover:text-main;
-    }
-    .m-tbl th, .m-tbl td {
-        @apply py-4 md:py-6;
+}
+
+/* 共通パーツ */
+// meta.phpの:rootに入っているcheckアイコンと別
+@mixin svg-checkBox($color) {
+    $encoded: conf.svg-encode($color);
+    background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2215%22%20height%3D%2211%22%20viewBox%3D%220%200%2015%2011%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0.353516%205.6455L4.39886%209.69085L13.7342%200.355469%22%20stroke%3D%22#{$encoded}%22/%3E%3C/svg%3E");
+}
+@mixin svg-radio($color) {
+    $encoded: conf.svg-encode($color);
+    background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='7' cy='7' r='7' fill='#{$encoded}'/%3E%3C/svg%3E");
+}
+.m-form__check {
+    display: block;
+    margin-top: -15px;
+    padding-block: 10px;
+
+    .horizontal-item {
+        display: inline-block;
+        vertical-align: top;
+        margin-top: 15px;
+        margin-inline: 0 20px;
+
+        + .horizontal-item {
+        margin-left: 0;
+        }
     }
 
-    .m-tbl.type-row-xs colgroup,
-    .m-tbl.type-row-xs thead {
-        @apply max-sm:hidden;
+    label {
+        position: relative;
+        display: inline-block;
+        vertical-align: top;
+        line-height: 1.6;
+
+        input[type=checkbox],
+        input[type=radio] {
+            // スクリーンリーダー向けの隠しコンテンツ
+            // a11y-css-resetから引用
+            // https://github.com/mike-engel/a11y-css-reset
+            border: 0 !important;
+            clip: rect(0 0 0 0) !important;
+            clip-path: inset(50%) !important;
+            height: 1px !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            padding: 0 !important;
+            position: absolute !important;
+            white-space: nowrap !important;
+            width: 1px !important;
+
+            + span {
+                display: inline-flex;
+                vertical-align: top;
+                align-items: flex-start;
+                column-gap: 8px;
+
+                &::before {
+                    content: '';
+                    flex-shrink: 0;
+                    width: 20px;
+                    height: 20px;
+                    margin-top: 4px;
+                    border: 1px solid #AFB0B2;
+                    background-repeat: no-repeat;
+                    background-position: center 4px;
+                    transition: background .2s, border .2s, box-shadow .2s;
+                }
+            }
+
+            &:focus {
+                + span {
+                    &::before {
+                        outline: 2px solid black;
+                        outline-offset: -1px;
+                    }
+                }
+            }
+        }
+
+        // checkbox
+        input[type=checkbox] {
+            + span {
+                &::before {
+                    background-color: #fff;
+                    border-radius: 4px;
+                    @include svg-checkBox(transparent);
+                    background-size: 14px auto;
+                }
+            }
+
+            &:checked {
+                + span {
+                    &::before {
+                        @include svg-checkBox(#64B6A4);
+                    }
+                }
+            }
+        }
+
+        // radio
+        input[type=radio] {
+            + span {
+                &::before {
+                    background-color: #fff;
+                    border-radius: 50%;
+                    @include svg-radio(transparent);
+                    background-size: 10px auto;
+                }
+                &::after {
+                    display: none;
+                }
+            }
+
+            &:checked {
+                + span {
+                    &::before {
+                        @include svg-radio(#64B6A4);
+                    }
+                }
+            }
+        }
     }
-    .m-tbl.type-row-xs th {
-        @apply max-sm:pb-1.5 max-sm:border-b-0;
+
+    &.type-column {
+        margin-top: 0;
+
+        .horizontal-item {
+            display: block;
+            width: 100%;
+            margin-right: 0;
+
+            &:first-child,
+            &.first {
+                margin-top: 0;
+            }
+        }
     }
-    .m-tbl.type-row-xs td {
-        @apply max-sm:pt-0 max-sm:border-b max-sm:border-main;
-    }
-    .m-tbl.type-row-xs th,
-    .m-tbl.type-row-xs td {
-        @apply max-sm:block max-sm:w-full max-sm:px-3.5;
-    }
-    .m-tbl.tbl-legal th {
-        @apply sm:w-[200px];
-    }
+}
+.m-form__info {
+    margin-block: 8px 0;
+    font-size: 12px;
+    color: #999;
 }

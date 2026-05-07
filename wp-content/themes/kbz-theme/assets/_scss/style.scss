@@ -1,58 +1,198 @@
 @charset "utf-8";
+
+@use "./common/config" as conf;
+@use "./common/post" as post;
+
 @use "./base" as *;
 @use "./components" as *;
 @use "./utilities" as *;
-
-/* ※画像関係の変数はmeta.phpから（WPやPHPの変数が効かない為） */
-:root {
-    --origin-width: 1366;
-    --header-h: 90px;
-    --header-h-sp: 60px;
-
-    /* font */
-    --font-sans: "Zen Kaku Gothic New", "游ゴシック体", "Yu Gothic", 'YuGothic', "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro", "メイリオ", 'Meiryo', "MS Pゴシック", "MS PGothic", 'sans-serif';
-    --font-mont: "Montserrat", sans-serif;
-
-    /* color */
-    --color-basic: #482C2C;
-    --color-main: #64B6A4;
-    --color-accent: #F8AFB9;
-    --color-light-gray: #F1F1EE;
-    --color-accent-link: #68a8dd;
-
-    --color-green-gray: #C9DAD9;
-    --color-beige: #f4f4f4;
-    --color-pale-green: #E3F1EC;
-    --color-pale-mint: #E6F1EE;
-    --color-pale-pink: #FDEDF7;
-    --color-pale-yellow: #F8EBD2;
-
-    --gradient-green-start: #6FC9B5;
-    --gradient-green-via: #A2ECDC;
-    --gradient-green-end: #8EE2D0;
-    --gradient-pink-start: #E98D95;
-    --gradient-pink-end: #F8AFB9;
-    --gradient-orange-start: #F1BC62;
-    --gradient-orange-end: #FAD893;
-
-    --post-theme-color: var(--color-main); /* 投稿のテーマカラー */
-}
 
 /*==================================================
 ** loading
 ==================================================*/
 .l-loading {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 999;
-    background-color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @apply fixed inset-0 w-full h-full z-[999] bg-white flex items-center justify-center;
 
     &-obj {}
 
     @at-root body#top-contents & {}
+}
+
+
+/*==================================================
+** header
+==================================================*/
+.l-header {}
+
+.l-header-nav {
+    @apply flex items-center;
+
+    .btn-nav {
+
+    }
+}
+
+.l-nav {
+    @apply flex items-center flex-col opacity-0 pointer-events-none fixed inset-0 mt-[--header-h-sp] bg-white/95 transition-all duration-300;
+    @screen lg {
+        @apply flex-row opacity-100 pointer-events-auto static mt-0 bg-transparent;
+    }
+
+    @at-root header.is-open & {
+        @apply opacity-100 pointer-events-auto;
+    }
+
+    &-inner {
+        @apply flex-grow flex flex-col items-center px-6 py-12 overflow-y-auto overflow-x-hidden w-full max-h-[calc(100%-var(--fixed-btn-h-sp))];
+        @screen lg {
+            @apply block flex-grow-0 p-0 overflow-hidden w-auto max-h-none;
+        }
+    }
+}
+.nav-link {
+    @apply relative inline-flex items-center pl-3.5 py-2.5;
+    @screen lg {
+        @apply pl-0 py-3.5;
+    }
+
+    &:before {
+        content: '';
+        @apply absolute left-0 top-5 aspect-square w-1.5 border-t border-r border-main rotate-45;
+        @screen lg {
+            @apply hidden;
+        }
+    }
+}
+.nav-list {
+    @apply leading-normal;
+}
+.nav-list--sub {
+    @apply -mt-2 leading-normal;
+    @screen lg {
+        @apply mt-0;
+    }
+
+    .nav-link {
+        @apply py-0 text-sm font-normal;
+        @screen lg {
+            @apply pl-3.5 py-1.5 font-medium;
+        }
+        &:before {
+            @apply hidden;
+            @screen lg {
+                @apply block absolute left-0 top-3.5 aspect-square w-1.5 border-t border-r border-main rotate-45;
+            }
+        }
+    }
+}
+
+.js-sub-menu {
+    @apply relative;
+
+    &__toggle {
+        &::after {
+            content: '';
+            @apply hidden aspect-square w-1.5 ml-2 border-r border-b border-green rotate-45;
+            @screen lg {
+                @apply block;
+            }
+        }
+    }
+    &__wrap {
+        @apply transition duration-300;
+        @screen lg {
+            @apply pointer-events-none !opacity-0 absolute z-10 left-1/2 -translate-x-1/2 top-full rounded-[0.625rem] px-5 py-3.5 whitespace-nowrap border;
+        }
+
+        &::before {
+            content: '';
+            @apply absolute left-2 top-1 aspect-[3/2] w-5 [clip-path:polygon(50%_0,_0_100%,_100%_100%)] -translate-y-full;
+        }
+
+        @at-root header.is-scroll & {
+            @apply -mt-2;
+        }
+    }
+
+    &.is-active {
+        .js-sub-menu__wrap {
+            @screen lg {
+                @apply pointer-events-auto !opacity-100;
+            }
+        }
+    }
+}
+
+
+/*==================================================
+** main
+==================================================*/
+main {
+    @apply mt-[var(--header-h-sp)];
+    @screen lg {
+        @apply mt-[var(--header-scroll-total)];
+    }
+    @screen xl {
+        @apply mt-[calc(var(--header-h)+var(--header-bot-h))] transition-all duration-300;
+    }
+
+    @at-root header.is-scroll ~ & {
+        @apply xl:mt-[var(--header-scroll-total)];
+    }
+}
+
+/*==================================================
+** 追従
+==================================================*/
+.l-fixed {
+    @apply fixed right-[1.25rem] bottom-[1.25rem] z-20 flex flex-col opacity-0 invisible transition-opacity duration-500;
+
+    &.is-show {
+        @apply opacity-100 visible;
+    }
+}
+#pagetop {
+    @apply flex items-center justify-center aspect-square w-10 border-0 rounded-full cursor-pointer transition-all duration-300 lg:hover:scale-110;
+    @screen sm {
+        @apply w-11;
+    }
+
+    &::before {
+        content: '';
+        @apply block aspect-square w-3.5 bg-no-repeat bg-center bg-[length:100%_auto] rotate-[-45deg] transition-all duration-300;
+        @include conf.icon-mask(var(--icon-pagetop), #fff);
+    }
+}
+
+
+/*==================================================
+** footer
+==================================================*/
+.sitemap-list {
+    @apply -mt-2;
+    @screen lg {
+        @apply -mt-3;
+    }
+}
+.sitemap-link {
+    @apply relative inline-flex items-center pl-3.5 py-2 leading-normal text-sm;
+    @screen lg {
+        @apply py-3;
+    }
+
+    &:before {
+        content: '';
+        @apply block absolute left-0 top-4 aspect-square w-1.5 border-t border-r border-main rotate-45;
+        @screen lg {
+            @apply top-5;
+        }
+    }
+}
+
+
+/*==================================================
+** 投稿系
+==================================================*/
+.postContent {
+    @include post.post-styles;
 }

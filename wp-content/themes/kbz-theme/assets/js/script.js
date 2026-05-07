@@ -49,6 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* gnav & footer */
     toggleNav();
+    toggleSubNav();
+    window.addEventListener('resize', debounce(toggleSubNav, 300));
 
 	/* pagetop */
     updateFixedOffset();
@@ -63,13 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* フォーム */
+    // /* フォーム */
 	setForm();
 
-    /* スライダー */
+    // /* スライダー */
+    topFvSlider();
     flowSlider();
 
-    /* 汎用パーツ */
+    // /* 汎用パーツ */
     bgPin();
     window.addEventListener('resize', debounce(() => {
         bgPin();
@@ -96,15 +99,11 @@ function scrollToHash(hash) {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const position = rect.top + scrollTop - (headerHeight * 1.7) + offset;
 
-    // del
-    // if (_isInitHashScroll) { // ページに入った時に
-    //     // window.scrollTo({ top: position, behavior: 'smooth' });
-    //     window.lenis.scrollTo(position, {
-    //         immediate: false,
-    //     });
-    //     _isInitHashScroll = false;
-    //     return;
-    // }
+    if (_isInitHashScroll) { // ページに入った時に
+        window.scrollTo({ top: position, behavior: 'smooth' });
+        _isInitHashScroll = false;
+        return;
+    }
 
     window.scrollTo({ top: position, behavior: 'smooth' });
 }
@@ -258,267 +257,34 @@ function animCommonScroll(){
     });
 }
 function animCommonParts(){
-    // animCheckPop();
-    const checksParts = document.querySelectorAll('.js-ani-check');
-    if (!checksParts.length) return;
+    const markerWrap = document.querySelectorAll('.js-marker-wrap');
+    if (markerWrap.length < 1) return;
+    markerWrap.forEach((title) => {
+        if(title.dataset.noAnim !== undefined) return; // 実行したくないもの
+        const objs = title.querySelectorAll('.js-marker');
+        const triggerEl = title.closest('.ani-gsap') || title;
 
-    // init
-    checksParts.forEach((parts) => {
-        const ico = parts.querySelectorAll('.js-ani-check__ico');
-        const text = parts.querySelectorAll('.js-ani-check__text');
-        if (!ico.length) return;
-        gsap.set(ico, {
-            scale: 1.8,
-            opacity: 0
+        if(objs.length < 1) return;
+        // 初期化
+        gsap.set(objs, {
+            webkitMask: 'linear-gradient(to right, #000 0%, #000 0%, transparent 0%)',
+            mask: 'linear-gradient(to right, #000 0%, #000 0%, transparent 0%)',
         });
-        gsap.set(text, {
-            opacity: 0,
-        });
-    });
 
-    document.addEventListener('app:loaded', () => {
-        checksParts.forEach((parts) => {
-            const ico = parts.querySelectorAll('.js-ani-check__ico');
-            const text = parts.querySelectorAll('.js-ani-check__text');
-            if (!ico.length) return;
-
-            const tl = gsap.timeline({
+        // アニメーション
+        document.addEventListener('app:loaded', () => {
+            gsap.to(objs, {
+                webkitMask: 'linear-gradient(to right, #000 0%, #000 100%, transparent 100%)',
+                mask: 'linear-gradient(to right, #000 0%, #000 100%, transparent 100%)',
+                duration: 0.65,
+                stagger: 0.2,
                 scrollTrigger: {
-                    // markers: true,
-                    trigger: parts,
-                    start: "top 80%",
-                    once: true
+                    trigger: triggerEl,
+                    start: 'top 100%',
+                    toggleActions: 'play none none none',
                 }
             });
-            tl.to(text, {
-                opacity: 1,
-                duration: 0.6,
-                stagger: 0.15
-            })
-            .to(ico, {
-                scale: 1,
-                opacity: 1,
-                duration: 0.6,
-                ease: "back.out(2)",
-                stagger: 0.15
-            }, "<");
-    });
-    }, { once: true });
-}
-
-/* TOP animation */
-function animTopFvScroll(){
-    const wrap = document.querySelector('.fv-wrap');
-    if (!wrap) return;
-
-    ScrollTrigger.normalizeScroll(true);
-
-    /* ------------ target elements */
-    const header = document.querySelector('#header');
-    const headerLogo = header.querySelector('.logo');
-    const headerNavBtn = header.querySelector('.l-header-nav .btn-nav');
-
-    const fvMask = wrap.querySelector('.fv-media-box.fv-mask');
-
-    const fvSummarySec = document.querySelector('.fv-summary-sec');
-    const fvSummarySecText = fvSummarySec.querySelector('.summary-text-box');
-    const fvSummarySecBlur = fvSummarySec.querySelectorAll('.bg-blur');
-    const fvTitle = fvSummarySec.querySelector('.fv-title-box');
-    const fvTitleImg = fvTitle.querySelector('.fv-title');
-
-    // /* ------------ fvMaskの初期サイズ */
-    const initialWidth = 60; // %
-    const initialHeight = 75; // %
-
-
-    /* ------------------------
-    ** fvMaskアニメーション
-    ------------------------ */
-    /* ------------ fvMaskアニメーションのend point */
-    const endEl = document.querySelector('[data-fv-end]');
-    const endOffset = endEl.offsetTop - window.innerHeight / 3;
-    const nextEl = endEl?.nextElementSibling;
-
-    /* ------------ fvMaskアニメーションのscale設定 */
-    function getMaxScale() {
-        const vw = window.innerWidth;
-        if (vw >= 3000) return 10;
-        if (vw >= 2000) return 6;
-        if (vw >= 640) return 5;
-        return 4;
-    }
-    let maxScale = getMaxScale();
-    function getScaleByScroll() {
-        const scrollTop = window.scrollY;
-        const start = fvMask.getBoundingClientRect().top + window.scrollY;
-        const end = endEl.getBoundingClientRect().top + window.scrollY;
-        const progress = (scrollTop - start) / (end - start);
-        const scale = 1 + (maxScale - 1) * progress;
-        return Math.min(Math.max(scale, 1), maxScale);
-    }
-    // 初期scale
-    const initialScale = getScaleByScroll();
-
-    /* ------------ fvMaskサイズ初期化 */
-    gsap.set(fvMask, {
-        maskSize: `${initialWidth * initialScale}% ${initialHeight * initialScale}%`,
-        webkitMaskSize: `${initialWidth * initialScale}% ${initialHeight * initialScale}%`,
-        filter: 'brightness(1)'
-    });
-
-    /* ------------ fvMaskアニメーション設定 */
-    const maskObj = { scale: initialScale };
-    gsap.to(maskObj, {
-        scale: maxScale,
-        ease: "none",
-        scrollTrigger: {
-            trigger: wrap,
-            start: "top top",
-            end: "bottom top",
-            scrub: true
-        },
-        onUpdate() {
-            const progress = this.progress();
-            gsap.set(fvMask, {
-                maskSize: `${initialWidth * maskObj.scale}% ${initialHeight * maskObj.scale}%`,
-                webkitMaskSize: `${initialWidth * maskObj.scale}% ${initialHeight * maskObj.scale}%`,
-                filter: `brightness(${1 - 0.3 * progress})`
-            });
-            gsap.set([fvTitle, headerLogo, headerNavBtn], {
-                filter: `grayscale(${progress}) brightness(${1 - progress}) contrast(1) invert(${progress})`
-            });
-        },
-    });
-
-
-    /* ------------ fvMask, fvTitleアニメーション設定：レスポンシブ対応 */
-    let fvMaskMedia = gsap.matchMedia();
-    // PC animation
-    fvMaskMedia.add("(min-width:768px)", () => {
-        /* ------------------------
-        ** fvTitleアニメーション（Scroll fixed）
-        ------------------------ */
-        function getEndOffset(){
-            return fvSummarySec.offsetHeight - fvTitle.offsetHeight;
-        }
-        gsap.killTweensOf(fvTitleImg); // tween kill
-        ScrollTrigger.create({
-            // markers: true,
-            trigger: fvSummarySec,
-            start: "top top",
-            end: () => `+=${getEndOffset()}`,
-            invalidateOnRefresh: true,
-
-            onEnter: () => {
-                gsap.set(fvTitle,{
-                    position:"fixed",
-                    top: 0,
-                });
-            },
-            onEnterBack: () => {
-                gsap.set(fvTitle,{
-                    position:"fixed",
-                    top: 0,
-                });
-            },
-            onLeave: () => {
-                gsap.set(fvTitle,{
-                    position:"absolute",
-                    top:getEndOffset()
-                });
-            },
-            onLeaveBack: () => {
-                gsap.set(fvTitle,{
-                    position:"fixed",
-                    top: 0,
-                });
-            }
-        });
-    });
-    // SP animation
-    fvMaskMedia.add("(max-width:767px)", () => {
-        gsap.to(maskObj, {
-            scale: maxScale,
-            ease: "power2.out",
-            scrollTrigger: {
-                // markers: true,
-                trigger: fvMask,
-                start: endOffset + window.innerHeight * 1.2,
-                onEnter: () => {
-                    gsap.killTweensOf(fvTitleImg); // tween kill
-                    gsap.to(fvTitleImg, {
-                        opacity: 0,
-                        filter: "blur(20px)",
-                        duration: 1.5,
-                        ease: "power3.out"
-                    });
-                },
-                onLeaveBack: () => {
-                    gsap.killTweensOf(fvTitleImg); // tween kill
-                    gsap.to(fvTitleImg, {
-                        opacity: 1,
-                        filter: "blur(0px)",
-                        duration: 0.5,
-                        ease: "power3.out"
-                    });
-                }
-            }
-        });
-    });
-
-    /* ------------------------
-    ** summaryテキストのbackdrop filter
-    ------------------------ */
-    ScrollTrigger.create({
-        // markers: true,
-        trigger: fvSummarySecText,
-        start: "top bottom",
-        end: "bottom bottom",
-        invalidateOnRefresh: true,
-
-        onEnter: () => {
-            gsap.set(fvSummarySecBlur, { opacity: 1 });
-        },
-        onLeave: () => {
-            gsap.set(fvSummarySecBlur, { opacity: 0 });
-        },
-        onEnterBack: () => {
-            gsap.set(fvSummarySecBlur, { opacity: 1 });
-        },
-        onLeaveBack: () => {
-            gsap.set(fvSummarySecBlur, { opacity: 0 });
-        },
-    });
-
-
-    /* ------------------------
-    ** 次の領域に入る時のヘッダーの変化
-    ------------------------ */
-    if (nextEl) {
-        ScrollTrigger.create({
-            // markers: true,
-            trigger: nextEl,
-            start: `top-=${header.offsetHeight / 2} top`,
-            invalidateOnRefresh: true,
-            onEnter: () => {
-                header.classList.add("is-scroll");
-                gsap.set([headerLogo, headerNavBtn], { clearProps: "filter" });
-                header.classList.remove("is-reverse");
-            },
-            onLeaveBack: (self) => {
-                header.classList.add("is-reverse");
-                header.classList.remove("is-scroll");
-            },
-        });
-    }
-
-
-    /* ------------------------
-    ** resize対応
-    ------------------------ */
-    window.addEventListener('resize', () => {
-        maxScale = getMaxScale();
-        ScrollTrigger.refresh();
+        }, { once: true });
     });
 }
 
@@ -580,6 +346,9 @@ function toggleNav() {
     // scroll時の変化
     function onScrollResize() {
         toggleHeaderScroll(headerWrap);
+        if (!isSp(992)) {
+            closeNav();
+        }
     }
     onScrollResize();
     window.addEventListener('scroll', onScrollResize);
@@ -592,9 +361,8 @@ function toggleNav() {
 function toggleHeaderScroll(header) {
     const headerEl = header;
     if (!headerEl) return;
-    if (document.body.id === 'top-contents') return;
 
-    let tgHeight = 10;
+    let tgHeight = 50;
     // let tgHeight = headerEl.offsetHeight;
     // if (document.body.id === 'top-contents') {
     //     tgHeight = headerEl.offsetHeight + 30;
@@ -604,6 +372,35 @@ function toggleHeaderScroll(header) {
         headerEl.classList.add('is-scroll');
     } else {
         headerEl.classList.remove('is-scroll');
+    }
+}
+
+function toggleSubNav() {
+    const isPc = !isSp(992);
+    if (isPc) {
+        const nav = document.querySelector('#gnav');
+        if (!nav) return;
+
+        document.querySelectorAll('.js-sub-menu').forEach(item => {
+            const toggleBtn = item.querySelector('.js-sub-menu__toggle');
+            const subNavWrap = item.querySelector('.js-sub-menu__wrap');
+            if (!toggleBtn || !subNavWrap) return;
+
+            const subShow = () => {
+                item.classList.add('is-active');
+            };
+            const subHide = (e) => {
+                if (!e || !e.relatedTarget || !item.contains(e.relatedTarget)) {
+                    item.classList.remove('is-active');
+                }
+            };
+
+            item.addEventListener('mouseenter', subShow);
+            item.addEventListener('mouseleave', subHide);
+
+            item.addEventListener('focusin', subShow);
+            item.addEventListener('focusout', subHide);
+        });
     }
 }
 
@@ -711,30 +508,41 @@ function setForm() {
 /*==================================================
 スライダー
 ==================================================*/
+function topFvSlider() {
+    const slider = document.querySelector('.top-fv-wrap .fv-slider');
+    if (!slider) return;
+
+    const slides = slider.querySelectorAll('.splide__slide');
+    const isSingle = slides.length <= 1;
+
+    const splide = new Splide(slider, {
+        type: isSingle ? 'slide' : 'loop',
+        arrows: false,
+        pagination: !isSingle,
+        drag: !isSingle,
+    });
+    splide.mount();
+}
 function flowSlider(){
-    const sliders = document.getElementsByClassName('js-flow-slider');
-    if(!sliders.length) return;
+    const sliders = document.querySelectorAll('.js-flow-slider');
+    if(!sliders) return;
 
     for (let i = 0; i < sliders.length; i++) {
         const sliderEl = sliders[i];
 
         const isReverse = sliderEl.classList.contains('type-reverse');
-        const autoScrollSpeed = isReverse ? -0.5 : 0.5;
+        const autoScrollSpeed = isReverse ? -1 : 1;
 
         const splide = new Splide(sliderEl, {
             type: 'loop',
-            drag: false,
+            autoWidth: true,
+            gap: '2.5rem',
             arrows: false,
             pagination: false,
-            gap: 0,
-            perPage: 3,
-            padding: '10%',
+            drag: false,
             breakpoints: {
-                1200: {
-                    perPage: 2,
-                },
                 640: {
-                    padding: '5%',
+                    gap: '8%',
                 },
             },
             autoScroll: {
@@ -743,14 +551,7 @@ function flowSlider(){
                 pauseOnFocus: false,
             },
         });
-
-        if (window.splide && window.splide.Extensions) {
-            splide.mount(window.splide.Extensions);
-        } else {
-            splide.mount();
-        }
-
-        sliderEl._splide = splide; // DOMに保存
+        splide.mount(window.splide.Extensions);
     }
 }
 

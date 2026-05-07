@@ -12,18 +12,33 @@ if(!is_front_page()){
 }
 ?>
 <!doctype html>
-<html <?php language_attributes(); ?> style="scroll-behavior: auto;">
+<html <?php language_attributes(); ?>>
 <head>
     <?php
 get_template_part('parts/gtm', 'meta');
     ?><meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="email=no,address=no">
+<?php if (has_post_thumbnail()) : ?>
+    <meta name="thumbnail" content="<?php the_post_thumbnail_url() ?>" />
+<?php endif; ?>
     <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
-    <link rel="alternate" media="handheld" href="#" />
+    <link rel="alternate" media="handheld" href="<?php echo home_url(); ?>" />
     <title><?php wp_title(); ?></title>
     <?php
 wp_head();
     ?>
-    <?php get_template_part('parts/web-font'); ?>
+<style>
+:root {
+    /* ※画像関係の変数のみ */
+    /* icon */
+    --icon-pagetop: url(<?php tmpImg('icon/icon_pagetop.svg'); ?>);
+    --icon-car: url(<?php tmpImg('icon/icon_car.svg'); ?>);
+    --icon-msg: url(<?php tmpImg('icon/icon_msg.svg'); ?>);
+    --icon-tel: url(<?php tmpImg('icon/icon_tel.svg'); ?>);
+
+    --clip-round: url(<?php tmpImg('icon/clip_round.svg'); ?>);
+}
+</style>
 </head>

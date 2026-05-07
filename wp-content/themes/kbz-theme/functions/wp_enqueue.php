@@ -1,4 +1,27 @@
 <?php
+function theme_enqueue_styles() {
+	wp_enqueue_style('child-style', get_stylesheet_directory_uri() . '/style.css');
+}
+add_action('wp_enqueue_scripts', 'theme_enqueue_styles');
+
+/* =====================================
+* FONT
+* ===================================== */
+define( 'FONT_URL', 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap' );
+function enqueue_fonts() {
+    wp_enqueue_style('fonts', FONT_URL, array(), null);
+}
+add_action('wp_enqueue_scripts', 'enqueue_fonts'); // Front
+add_action('enqueue_block_editor_assets', 'enqueue_fonts'); // Block
+function add_editor_font() {
+    add_editor_style(FONT_URL);
+}
+add_action('after_setup_theme', 'add_editor_font'); // Classic
+
+
+/* =====================================
+* CSS & JS
+* ===================================== */
 add_action('wp_enqueue_scripts', function() {
     $css_path = '/assets/css/';
     $dir_path = get_stylesheet_directory() . $css_path;
@@ -7,28 +30,27 @@ add_action('wp_enqueue_scripts', function() {
     /* =====================================
      * ① Tailwind
      * ===================================== */
-    $tailwind_min = $dir_path . 'tailwind.min.css';
-    $tailwind_css = $dir_path . 'tailwind.css';
+    // $tailwind_min = $dir_path . 'tailwind.min.css';
+    // $tailwind_css = $dir_path . 'tailwind.css';
 
-    $use_cdn = defined('tailwind_cdn_mode') && tailwind_cdn_mode;
-    if ( !$use_cdn && (file_exists($tailwind_min) || file_exists($tailwind_css)) ){
-        if (file_exists($tailwind_min)) {
-            $file = 'tailwind.min.css';
-        } else {
-            $file = 'tailwind.css';
-        }
-        wp_enqueue_style('tailwind', $uri_path . $file, [], filemtime($dir_path . $file), 'all');
-    } else {
-        wp_enqueue_script('tailwind-cdn', 'https://cdn.tailwindcss.com', [], null, false);
-    }
+    // $use_cdn = defined('tailwind_cdn_mode') && tailwind_cdn_mode;
+    // if ( !$use_cdn && (file_exists($tailwind_min) || file_exists($tailwind_css)) ){
+    //     if (file_exists($tailwind_min)) {
+    //         $file = 'tailwind.min.css';
+    //     } else {
+    //         $file = 'tailwind.css';
+    //     }
+    //     wp_enqueue_style('tailwind', $uri_path . $file, [], filemtime($dir_path . $file), 'all');
+    // } else {
+    //     wp_enqueue_script('tailwind-cdn', 'https://cdn.tailwindcss.com', [], null, false);
+    // }
 
 
     /* =====================================
      * ② 共通CSS
      * ===================================== */
-    wp_enqueue_style('fontawesome', 'https://use.fontawesome.com/releases/v5.6.1/css/all.css', [], '5.6.1');
     wp_enqueue_style('splide-css', get_template_directory_uri() . '/assets/library/splide/splide.min.css', [], '4.1.3');
-    wp_enqueue_style('style', _get_file('/assets/css/style.min.css'), [], null, 'all');
+    // wp_enqueue_style('style', _get_file('/assets/css/style.min.css'), [], null, 'all');
 
 
     /* =====================================

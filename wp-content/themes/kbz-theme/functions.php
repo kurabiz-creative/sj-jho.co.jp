@@ -1,11 +1,16 @@
 <?php
-define('TMP_DIR',get_stylesheet_directory_uri().'/assets');
-define('TMP_IMG',TMP_DIR . '/img');
+// define('TMP_DIR', get_stylesheet_directory_uri());
+define('TMP_DIR', get_stylesheet_directory_uri().'/assets');
+define('TMP_IMG', TMP_DIR . '/img');
 
-// function theme_enqueue_styles() {
-// 	wp_enqueue_style('child-style', get_stylesheet_directory_uri() . '/style.css');
-// }
-// add_action('wp_enqueue_scripts', 'theme_enqueue_styles');
+function tmpImg($folder = NULL, $echo = true){
+	$path = TMP_IMG . (!empty($folder) ? '/' . $folder : NULL);
+	if($echo) {
+		echo $path;
+	}else{
+		return $path;
+	}
+}
 
 /* **************************************************************************************************** */
 // Load Public Scripts
@@ -62,22 +67,22 @@ add_action('admin_init',function(){
 });
 
 //GutenbergにオリジナルのCSSを適用する
-add_action('admin_init', 'classic_editor_css');
 function classic_editor_css() {
-    add_editor_style('css/editor-style.css'); //エディタ専用
-    // add_editor_style('css/page.css'); //サイトオリジナル
+    add_editor_style('assets/css/editor-style.css'); //エディタ専用
+    // add_editor_style('assets/css/page.css'); //サイトオリジナル
 }
-add_action('after_setup_theme', 'block_editor_css');
+add_action('admin_init', 'classic_editor_css');
 function block_editor_css() {
   add_theme_support('editor-styles');
-  add_editor_style('css/page.css'); //サイトオリジナル
-  add_editor_style('css/editor-style.css'); //エディタ専用
+  add_editor_style('assets/css/editor-style.css'); //エディタ専用
+//   add_editor_style('assets/css/page.css'); //サイトオリジナル
 }
+add_action('after_setup_theme', 'block_editor_css');
 
 //エディタースタイルのキャッシュクリア
 function extend_tiny_mce_before_init($mce_init){
     $mce_init['cache_suffix']='v='.time();
-    return $mce_init;
+    return $mce_init;    
 }
 add_filter('tiny_mce_before_init','extend_tiny_mce_before_init');
 
@@ -88,20 +93,27 @@ function custom_editor_settings( $initArray ){
 }
 add_filter('tiny_mce_before_init', 'custom_editor_settings');
 
-//投稿エディターでh2以降しかタイトルを入れられないようにする（ブロックエディタ用）
-function modify_heading_block_settings($settings, $context){
-    if(isset($settings['attributes']['level']['enum'])){
-        $settings['attributes']['level']['enum'] = array_values(
-            array_diff( $settings['attributes']['level']['enum'],[1])
-        );
+// 投稿エディターでh2以降しかタイトルを入れられないようにする（ブロックエディター）
+function custom_editor_settings_block( $args, $block_type ) {
+    if ( 'core/heading' !== $block_type ) {
+        return $args;
     }
-    return $settings;
+    // H1以外
+    $args['attributes']['levelOptions']['default'] = [ 2, 3, 4, 5, 6 ];
+    return $args;
 }
-add_filter('allowed_block_types_all', function($allowed_blocks, $editor_context){
-    if(isset( $allowed_blocks['core/heading'])){
-        $allowed_blocks['core/heading'] = modify_heading_block_settings( $allowed_blocks['core/heading'], $editor_context );
+add_filter( 'register_block_type_args', 'custom_editor_settings_block', 10, 2 );
+
+add_action('after_setup_theme', function() {
+    add_theme_support('post-thumbnails', array('post', 'page'));
+});
+
+// 投稿のみClassic editor
+add_filter('use_block_editor_for_post_type', function($use_block_editor, $post_type){
+    if ($post_type === 'post') {
+        return false; // classic editor
     }
-    return $allowed_blocks;
+    return $use_block_editor;
 }, 10, 2);
 
 
@@ -146,11 +158,24 @@ add_filter( 'screen_options_show_screen', 'hide_screen_options_for_editors' );
 //投稿一覧から「投稿者」「タグ」「コメント」の列を非表示にする
 function custom_manage_posts_columns($columns) {
     // unset($columns['author']);   // 投稿者列を非表示
-    unset($columns['tags']);     // タグ列を非表示
+    // unset($columns['tags']);     // タグ列を非表示
     unset($columns['comments']); // コメント列を非表示
     return $columns;
 }
 add_filter('manage_posts_columns', 'custom_manage_posts_columns');
+
+// 管理画面のメニューから「コメント」を非表示
+add_action('admin_menu', 'hide_comments_menu', 999);
+function hide_comments_menu() {
+    remove_menu_page('edit-comments.php');
+}
+
+// アドミンバーから「コメント」を非表示
+add_action('wp_before_admin_bar_render', 'hide_comments_admin_bar');
+function hide_comments_admin_bar() {
+    global $wp_admin_bar;
+    $wp_admin_bar->remove_node('comments');
+}
 
 /***********************************************************
 * Options Page
@@ -167,47 +192,69 @@ add_filter('manage_posts_columns', 'custom_manage_posts_columns');
 
 // }
 
+/***********************************************************
+* get ACF Option page by Meny slug
+***********************************************************/
+function get_acf_fields_by_menu_slug($menu_slug) {
+    if (!function_exists('acf_get_options_pages')) return null;
+
+    $pages = acf_get_options_pages();
+    if (!$pages) return null;
+
+    foreach ($pages as $page) {
+        if (isset($page['menu_slug']) && $page['menu_slug'] === $menu_slug) {
+            $post_id = $page['post_id'] ?? 'options';
+
+            return get_field_objects($post_id);
+        }
+    }
+
+    return null;
+}
+
 
 /* **************************************************************************************************** */
 // Pagenation
 /* **************************************************************************************************** */
-function kriesi_pagination($pages = '', $range = 3){
+function kriesi_pagination($pages = '', $range = 2){
     global $paged;
     if(empty($paged)) $paged = 1;
 
-	if($pages == '') {
-		global $wp_query;
-		$pages = $wp_query->max_num_pages;
-		if(!$pages) $pages = 1;
-	}
+    if($pages == ''){
+        global $wp_query;
+        $pages = $wp_query->max_num_pages;
+        if(!$pages) $pages = 1;
+    }
 
-	$start = $paged - $range;
-	if($start < 3){
-		$start = 1;
-	}
+    $showitems = ($range * 2) + 1;
+    echo "<div class='pagination font-mont'>";
+    $show_arrows = ($pages >= ($showitems + 1));
+    if($show_arrows && $paged > 1){
+        echo "<a href='".get_pagenum_link(1)."' class='pagination-arr first' aria-label='最初のページへ'><i class='arr'></i></a>";
+        echo "<a href='".get_pagenum_link($paged - 1)."' class='pagination-arr prev' aria-label='前のページへ'><i class='arr'></i></a>";
+    }
 
-	$end = $start + $range * 2;
-	if($end > $pages){
-		$end = $pages;
-		$start = $pages - $range * 2;
-		if($start < 1) $start = 1;
-	}
+    $start = max(1, $paged - $range);
+    $end   = min($pages, $paged + $range);
+    if(($end - $start + 1) < $showitems){
+        if($start == 1){
+            $end = min($pages, $start + $showitems - 1);
+        } elseif($end == $pages){
+            $start = max(1, $end - $showitems + 1);
+        }
+    }
 
-	echo '<div class="pagination space-half">';
+    for($i = $start; $i <= $end; $i++){
+        echo ($paged == $i)
+            ? "<span class='pagination-btn current'>$i</span>"
+            : "<a href='".get_pagenum_link($i)."' class='pagination-btn'>$i</a>";
+    }
 
-	if($start > 2){
-		echo '<a href="' . get_pagenum_link(1) . '">1</a>' . "\n";
-		echo '<span class="no-navi navi-co">･･･</span>' . "\n";
-	}
-	for($i = $start; $i <= $end; $i++){
-		echo ($paged == $i ? '<span class="current">' . $i . '</span>' : '<a href="' . get_pagenum_link($i) . '" class="inactive">' . $i . '</a>') . "\n";
-	}
-	if($end < $pages - 1){
-		echo '<span class="no-navi navi-co">･･･</span>' . "\n";
-		echo '<a href="' . get_pagenum_link($pages) . '" class="inactive">' . $pages . '</a>' . "\n";
-	}
-
-	echo '</div>' . "\n";
+    if($show_arrows && $paged < $pages){
+        echo "<a href='".get_pagenum_link($paged + 1)."' class='pagination-arr next' aria-label='次のページへ'><i class='arr'></i></a>";
+        echo "<a href='".get_pagenum_link($pages)."' class='pagination-arr last' aria-label='最後のページへ'><i class='arr'></i></a>";
+    }
+    echo "</div>";
 }
 
 // function kriesi_pagination($pages = '', $range = 1){
@@ -355,64 +402,6 @@ function my_page_templates($templates) {
     return $templates;
 }
 
-/***********************************************************
-* 投稿サムネイル
-***********************************************************/
-$types = ['post'];
-add_theme_support('post-thumbnails', $types);
-foreach ($types as $type) {
-    add_filter("manage_{$type}_posts_columns", function($columns) {
-        $new = [];
-        $new['thumbnail'] = 'サムネイル';
-        return $new + $columns;
-    });
-    add_action("manage_{$type}_posts_custom_column", function($column, $post_id) use ($type) {
-        if ($column !== 'thumbnail') return;
-
-        // 通常投稿はアイキャッチ
-        if ($type === 'post') {
-            $thumb = get_the_post_thumbnail($post_id, 'thumbnail');
-            echo $thumb ?: '—';
-            return;
-        }
-
-        // ACF product_img Repeater
-        // $field_name = 'product_img';
-        // if(!have_rows($field_name, $post_id)){
-        //     $field_name = 'process_img';
-        // }
-        // if(have_rows($field_name, $post_id)){
-        //     the_row();
-        //     $image = get_sub_field('img');
-        //     if ($image) {
-        //         // IDの場合
-        //         if (is_numeric($image)) {
-        //             echo wp_get_attachment_image($image, 'thumbnail');
-        //         }
-        //         // Arrayのばあい
-        //         elseif (is_array($image) && isset($image['ID'])) {
-        //             echo wp_get_attachment_image($image['ID'], 'thumbnail');
-        //         } else {
-        //             echo '—';
-        //         }
-        //     } else {
-        //         echo '—';
-        //     }
-        //     reset_rows();
-        // } else {
-        //     echo '—';
-        // }
-    }, 10, 2);
-}
-
-add_action('admin_head', function(){
-    echo '<style>
-        .column-thumbnail { width: 80px; text-align:center; }
-        .column-thumbnail img { max-width: 70px; height:auto; }
-    </style>';
-});
-
-
 /**
  * 現在日から指定日まで日数が経っているかチェック
  * 主にアイコン「NEW」で使う
@@ -458,6 +447,43 @@ function _get_file($file,$filePath = '',$fileTargetPath = '') {
 	}
 	return $filePath.$file.'?'._get_fileTimestamp($file, $fileTargetPath);
 }
+
+
+/***********************************************************
+* 投稿設定
+***********************************************************/
+/* 投稿：サムネイル追加 */
+// $types = ['post'];
+// add_theme_support('post-thumbnails', $types);
+// foreach ($types as $type) {
+//     add_filter("manage_{$type}_posts_columns", function($columns) {
+//         $new = [];
+//         $new['thumbnail'] = 'サムネイル';
+//         return $new + $columns;
+//     });
+//     add_action("manage_{$type}_posts_custom_column", function($column, $post_id) {
+//         if ($column === 'thumbnail') {
+//             $thumb = get_the_post_thumbnail($post_id, 'thumbnail');
+//             echo $thumb ?: '—';
+//         }
+//     }, 10, 2);
+// }
+// add_action('admin_head', function(){
+//     echo '<style>
+//         .column-thumbnail { width: 80px; text-align:center; }
+//         .column-thumbnail img { max-width: 70px; height:auto; }
+//     </style>';
+// });
+
+/* 投稿：PICKUP有無を管理画面の一覧に表示 */
+// add_filter('manage_post_posts_columns', function($columns){
+//     $columns['column_pickup'] = 'ピックアップにする';
+//     return $columns;
+// });
+// add_action('manage_post_posts_custom_column', function($column, $post_id){
+//     if ($column === 'column_pickup') {
+//         $pickup = get_field('column_pickup', $post_id);
+//         echo $pickup ? '✔' : '-';
+//     }
+// }, 10, 2);
 ?>
-
-
