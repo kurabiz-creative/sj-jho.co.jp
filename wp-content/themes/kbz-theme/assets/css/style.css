@@ -1,0 +1,356 @@
+@charset "UTF-8";
+/*
+    base：従来のreset.cssのようなもののみ（★★:root以外は基本的に編集しない★★）
+    ※tailwindcssのBase Styles（https://v3.tailwindcss.com/docs/preflight）
+*/
+@tailwind base;
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scrollbar-gutter: stable;
+  }
+  body {
+    /* @apply text-basic font-sans tracking-wider antialiased overflow-x-hidden */
+    @apply text-basic font-sans antialiased overflow-x-hidden relative w-full leading-relaxed;
+    letter-spacing: 0;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    line-break: strict;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply leading-relaxed;
+  }
+  @screen lg {
+    h1, h2, h3, h4, h5, h6 {
+      @apply leading-snug;
+    }
+  }
+  a {
+    @apply transition-all duration-300 hover:text-main;
+  }
+  img {
+    @apply w-auto;
+  }
+  /* S: form関係 */
+  input[type=button], input[type=reset], input[type=submit] {
+    @apply cursor-pointer;
+    -webkit-appearance: button;
+  }
+  input[type=button][disabled], input[type=reset][disabled], input[type=submit][disabled] {
+    @apply cursor-default;
+  }
+  input[type=checkbox], input[type=radio] {
+    @apply relative cursor-pointer;
+    top: 0.15em;
+    width: 1em;
+    height: 1em;
+    margin: 0 5px 0 0;
+    padding: 0;
+    vertical-align: baseline;
+  }
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    height: auto;
+  }
+  input[type=search]::-webkit-outer-spin-button {
+    box-sizing: content-box;
+    -webkit-appearance: textfield;
+  }
+  input[type=search]::-webkit-outer-spin-button::-webkit-search-cancel-button input[type=search]::-webkit-outer-spin-button::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+  input[type=text], input[type=password], input[type=email], input[type=search], input[type=url],
+  input[type=tel], input[type=number], input[type=date], input[type=datetime-local], input[type=month], input[type=week], input[type=time],
+  select, textarea {
+    @apply w-full align-top h-11 px-3.5 py-2 border border-gray-200 rounded text-basic transition duration-200
+        focus:outline-none
+        focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-black;
+  }
+  textarea {
+    @apply h-auto;
+  }
+  input[type=file] {
+    @apply w-full max-w-md cursor-pointer;
+  }
+  input[type=file]::file-selector-button {
+    @apply px-2.5 py-2 mr-3 leading-none bg-gray-200 border-transparent rounded cursor-pointer;
+  }
+  label {
+    @apply relative block cursor-pointer;
+  }
+  select {
+    @apply w-auto;
+    padding-inline: 15px 35px !important;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTMiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDEzIDgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+IDxwYXRoIGQ9Ik0xIDFMNi41IDYuNUwxMiAxIiBzdHJva2U9IiMzMzMzMzMiLz4gPC9zdmc+");
+    background-repeat: no-repeat;
+    background-size: 12px auto;
+    background-position: calc(100% - 8px) center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  /* E: form関係 */
+}
+/*
+    components：共通のパーツのみ
+*/
+@tailwind components;
+@layer components {
+  /*==================================================
+  ** layout
+  ==================================================*/
+  body.is-loading, body.no-scroll {
+    overflow: hidden !important;
+    width: 100% !important;
+    height: 100% !important;
+    -ms-touch-action: none;
+    touch-action: none;
+    -webkit-overflow-scrolling: auto;
+  }
+  body.no-scroll .l-fixed {
+    display: none !important;
+  }
+  /* .breadcrumbs > * {
+      @apply inline-flex items-center
+  } */
+  /*==================================================
+  ** icon
+  ==================================================*/
+  .m-ico {
+    @apply flex-none relative z-[1] transition duration-500 inline-block align-top mask-no-repeat mask-center mask-contain;
+  }
+  /*==================================================
+  ** button
+  ==================================================*/
+  .m-btn {
+    @apply relative overflow-hidden inline-flex align-top text-white hover:text-white
+        w-auto h-[3.125em] px-[1.125em] leading-normal
+        transition-all duration-500;
+  }
+  .m-btn.bg-grad-green {
+    @apply bg-gradient-to-r from-gradient-green-end via-gradient-green-start to-gradient-green-end
+        bg-[position:100%_50%] bg-[size:300%_100%];
+  }
+  .m-btn.bg-grad-orange {
+    @apply bg-gradient-to-r from-gradient-orange-end via-gradient-orange-start to-gradient-orange-end
+        bg-[position:100%_50%] bg-[size:300%_100%];
+  }
+  .m-btn.bg-grad-pink {
+    @apply bg-gradient-to-r from-gradient-pink-end via-gradient-pink-start to-gradient-pink-end
+        bg-[position:100%_50%] bg-[size:300%_100%];
+  }
+  .m-btn.bg-grad-green:not(.no-hover-grad),
+  .m-btn.bg-grad-orange:not(.no-hover-grad),
+  .m-btn.bg-grad-pink:not(.no-hover-grad) {
+    @apply hover:bg-[position:0_50%];
+  }
+  .m-btn[disabled],
+  .m-btn.is-disabled {
+    @apply pointer-events-none from-[#ECECEC] via-[#CFCFCF] to-[#ECECEC];
+  }
+  .m-btn .m-ico {
+    @apply right-0 flex-none w-[1.125em] h-[1.125em] ml-[0.625em] duration-[400ms];
+  }
+  .m-btn:has(input),
+  .m-btn:has(button[type=submit]) {
+    @apply p-0 border-0;
+  }
+  .m-btn:has(input) .m-ico,
+  .m-btn:has(button[type=submit]) .m-ico {
+    @apply absolute right-[1.125em] inset-y-0 my-auto;
+  }
+  .m-btn input,
+  .m-btn button[type=submit] {
+    @apply z-[1] pl-[1.125em] pr-[2.875em] flex-grow self-stretch bg-transparent whitespace-normal leading-[inherit];
+  }
+  /*==================================================
+  ** list & text
+  ==================================================*/
+  .m-ul-list {
+    @apply pl-[1em] indent-[-1em] space-y-[0.25em];
+  }
+  .m-ul-list > li::before {
+    content: "・";
+  }
+  .m-ol-list {
+    @apply pl-[1.25em] list-decimal space-y-[0.25em];
+  }
+  .m-ul-list a,
+  .m-ol-list a {
+    @apply inline underline opacity-100 hover:opacity-70;
+    color: var(--color-accent-link);
+  }
+  .m-notice-text {
+    padding-left: 1em;
+    text-indent: -1em;
+  }
+  /*==================================================
+  ** table
+  ==================================================*/
+  /* デフォルトテーブル */
+  .m-tbl table {
+    @apply w-full table-fixed;
+  }
+  .m-tbl caption {
+    @apply sr-only;
+  }
+  .m-tbl th {
+    @apply relative font-medium border-b border-main;
+  }
+  .m-tbl td {
+    @apply relative border-b border-[#D4E6E3] px-1.5;
+  }
+  .m-tbl td a {
+    @apply underline text-accent-link hover:text-main;
+  }
+  .m-tbl th, .m-tbl td {
+    @apply py-4 md:py-6;
+  }
+  .m-tbl.type-row-xs colgroup,
+  .m-tbl.type-row-xs thead {
+    @apply max-sm:hidden;
+  }
+  .m-tbl.type-row-xs th {
+    @apply max-sm:pb-1.5 max-sm:border-b-0;
+  }
+  .m-tbl.type-row-xs td {
+    @apply max-sm:pt-0 max-sm:border-b max-sm:border-main;
+  }
+  .m-tbl.type-row-xs th,
+  .m-tbl.type-row-xs td {
+    @apply max-sm:block max-sm:w-full max-sm:px-3.5;
+  }
+  .m-tbl.tbl-legal th {
+    @apply sm:w-[200px];
+  }
+}
+/*
+    utilities：余白・カラーなど共通で使うもの（パーツではない）
+*/
+@tailwind utilities;
+@layer utilities {
+  /* S: ★★原則この中は編集しない★★ */
+  .container {
+    @apply relative sm:max-w-[640px] md:max-w-[650px] lg:max-w-[870px] xl:max-w-[1070px] 2xl:max-w-[1170px];
+  }
+  .container-md { /* デザインによる追加 */
+    @apply relative max-w-[650px] lg:max-w-[870px] xl:max-w-[1006px] px-[1.5rem] md:px-[15px] mx-auto;
+  }
+  .block-box {
+    @apply py-16 md:py-20 xl:py-32;
+  }
+  .remove {
+    @apply relative
+            overflow-hidden
+            block
+            w-full
+            h-0
+            text-[0.5em]
+            text-left
+            indent-[-9999px]
+            bg-center
+            bg-no-repeat
+            bg-cover;
+  }
+  @screen md {
+    .leading-relaxed {
+      line-height: 1.84;
+    }
+  }
+  /* v4.2~ */
+  .mask-center {
+    mask-position: center;
+    -webkit-mask-position: center;
+  }
+  .mask-no-repeat {
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+  }
+  .mask-contain {
+    mask-size: contain;
+    -webkit-mask-size: contain;
+  }
+  /* E: ★★原則この中は編集しない★★ */
+  /* S: 該当サイトのみのもの（なるべく控える） */
+  .bg-grad-green {
+    @apply bg-gradient-to-r from-gradient-green-start to-gradient-green-end;
+  }
+  .bg-grad-green-2 {
+    @apply bg-gradient-to-r from-gradient-green-start to-gradient-green-via;
+  }
+  .bg-grad-orange {
+    @apply bg-gradient-to-r from-gradient-orange-start to-gradient-orange-end;
+  }
+  .bg-grad-pink {
+    @apply bg-gradient-to-r from-gradient-pink-start to-gradient-pink-end;
+  }
+  .bg-grad-pink-2 {
+    @apply bg-gradient-to-r from-gradient-pink-start via-accent via-70% to-gradient-pink-start;
+  }
+  .bg-rainbow {
+    background: linear-gradient(to right, #6FC9B5 0%, #F2CE85 50%, #F2A1AA 100%);
+  }
+  .bg-dot {
+    @apply bg-[linear-gradient(to_right,transparent_1px,var(--dot-color)_1px,var(--dot-color)_2px,transparent_2px)]
+            bg-[length:4px_1px]
+            bg-repeat-x
+            bg-left-bottom;
+  }
+  .bg-dot-white {
+    --dot-color: #fff;
+  }
+  .bg-dot-basic {
+    --dot-color: var(--color-basic);
+  }
+  .bg-dot-green-gray {
+    --dot-color: var(--color-green-gray);
+  }
+  /* E: 該当サイトのみのもの（なるべく控える） */
+}
+/* ※画像関係の変数はmeta.phpから（WPやPHPの変数が効かない為） */
+:root {
+  --origin-width: 1366;
+  --header-h: 90px;
+  --header-h-sp: 60px;
+  /* font */
+  --font-sans: "Zen Kaku Gothic New", "游ゴシック体", "Yu Gothic", "YuGothic", "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro", "メイリオ", "Meiryo", "MS Pゴシック", "MS PGothic", "sans-serif";
+  --font-mont: "Montserrat", sans-serif;
+  /* color */
+  --color-basic: #482C2C;
+  --color-main: #64B6A4;
+  --color-accent: #F8AFB9;
+  --color-light-gray: #F1F1EE;
+  --color-accent-link: #68a8dd;
+  --color-green-gray: #C9DAD9;
+  --color-beige: #f4f4f4;
+  --color-pale-green: #E3F1EC;
+  --color-pale-mint: #E6F1EE;
+  --color-pale-pink: #FDEDF7;
+  --color-pale-yellow: #F8EBD2;
+  --gradient-green-start: #6FC9B5;
+  --gradient-green-via: #A2ECDC;
+  --gradient-green-end: #8EE2D0;
+  --gradient-pink-start: #E98D95;
+  --gradient-pink-end: #F8AFB9;
+  --gradient-orange-start: #F1BC62;
+  --gradient-orange-end: #FAD893;
+  --post-theme-color: var(--color-main); /* 投稿のテーマカラー */
+}
+
+/*==================================================
+** loading
+==================================================*/
+.l-loading {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

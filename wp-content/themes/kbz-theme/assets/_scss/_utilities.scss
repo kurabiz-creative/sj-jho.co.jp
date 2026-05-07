@@ -1,0 +1,86 @@
+/*
+    utilities：余白・カラーなど共通で使うもの（パーツではない）
+*/
+@tailwind utilities;
+@layer utilities {
+    /* S: ★★原則この中は編集しない★★ */
+    .container {
+        @apply relative sm:max-w-[640px] md:max-w-[650px] lg:max-w-[870px] xl:max-w-[1070px] 2xl:max-w-[1170px];
+    }
+    .container-md { /* デザインによる追加 */
+        @apply relative max-w-[650px] lg:max-w-[870px] xl:max-w-[1006px] px-[1.5rem] md:px-[15px] mx-auto;
+    }
+    .block-box {
+        @apply py-16 md:py-20 xl:py-32
+    }
+    .remove {
+        @apply
+            relative
+            overflow-hidden
+            block
+            w-full
+            h-0
+            text-[0.5em]
+            text-left
+            indent-[-9999px]
+            bg-center
+            bg-no-repeat
+            bg-cover;
+    }
+    @screen md {
+        .leading-relaxed {
+            line-height: 1.84;
+        }
+    }
+
+    /* v4.2~ */
+    .mask-center{
+        mask-position: center;
+        -webkit-mask-position: center;
+    }
+    .mask-no-repeat{
+        mask-repeat: no-repeat;
+        -webkit-mask-repeat: no-repeat;
+    }
+    .mask-contain {
+        mask-size: contain;
+        -webkit-mask-size: contain;
+    }
+    /* E: ★★原則この中は編集しない★★ */
+
+    /* S: 該当サイトのみのもの（なるべく控える） */
+    .bg-grad-green {
+        @apply bg-gradient-to-r from-gradient-green-start to-gradient-green-end;
+    }
+    .bg-grad-green-2 {
+        @apply bg-gradient-to-r from-gradient-green-start to-gradient-green-via;
+    }
+    .bg-grad-orange {
+        @apply bg-gradient-to-r from-gradient-orange-start to-gradient-orange-end;
+    }
+    .bg-grad-pink {
+        @apply bg-gradient-to-r from-gradient-pink-start to-gradient-pink-end;
+    }
+    .bg-grad-pink-2 {
+        @apply bg-gradient-to-r from-gradient-pink-start via-accent via-70% to-gradient-pink-start;
+    }
+    .bg-rainbow {
+        background: linear-gradient(to right, #6FC9B5 0%, #F2CE85 50%, #F2A1AA 100%);
+    }
+    .bg-dot {
+        @apply bg-[linear-gradient(to_right,transparent_1px,var(--dot-color)_1px,var(--dot-color)_2px,transparent_2px)]
+            bg-[length:4px_1px]
+            bg-repeat-x
+            bg-left-bottom;
+    }
+    .bg-dot-white {
+        --dot-color: #fff;
+    }
+    .bg-dot-basic {
+        --dot-color: var(--color-basic);
+    }
+    .bg-dot-green-gray {
+        --dot-color: var(--color-green-gray);
+    }
+    /* E: 該当サイトのみのもの（なるべく控える） */
+}

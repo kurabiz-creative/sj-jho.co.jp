@@ -1,0 +1,45 @@
+{
+    "name": "kurabiz_wp",
+    "version": "1.0.0",
+    "scripts": {
+        "up": "docker compose up -d",
+        "down": "docker compose down",
+
+        "_sass": "sass wp-content/themes/kbz-theme/assets/_scss:wp-content/themes/kbz-theme/assets/css --style=expanded --no-source-map",
+        "_sass-watch": "sass --watch wp-content/themes/kbz-theme/assets/_scss:wp-content/themes/kbz-theme/assets/css --style=expanded --no-source-map",
+        "_postcss": "postcss \"wp-content/themes/kbz-theme/assets/css/!(*.min).css\" --dir wp-content/themes/kbz-theme/assets/css --ext .min.css",
+        "_postcss-watch": "onchange \"wp-content/themes/kbz-theme/assets/css/style.css\" -- npm run _postcss",
+        "build": "npm-run-all _sass _postcss",
+
+        "_watch:php": "onchange \"wp-content/themes/kbz-theme/**/*.php\" -- npm run build",
+        "_watch:scss": "onchange \"wp-content/themes/kbz-theme/assets/_scss/**/*.scss\" -- npm run build",
+        "watch": "npm-run-all --parallel _watch:php _watch:scss",
+
+        "serve": "browser-sync start --proxy localhost:8888 --files \"wp-content/themes/kbz-theme/**/*.*\" --watch-options.usePolling=true --delay 1000",
+        "dev": "npm-run-all up build --parallel watch serve"
+    },
+    "devDependencies": {
+        "browser-sync": "^3.0.3",
+        "cross-env": "^10.1.0",
+        "cssnano": "^7.1.7",
+        "onchange": "^7.1.0",
+        "postcss": "^8.5.3",
+        "postcss-cli": "^11.0.1",
+        "postcss-preset-env": "^11.2.1",
+        "sass": "^1.85.1",
+        "@tailwindcss/line-clamp": "^0.4.4",
+        "tailwindcss": "^3.4.19"
+    },
+    "dependencies": {
+        "npm-run-all": "^4.1.5"
+    },
+    "browserslist": [
+        "last 2 versions",
+        "IE 8-11",
+        "Safari >= 6",
+        "Android >= 4.3"
+    ],
+    "volta": {
+        "node": "22.22.2"
+    }
+}

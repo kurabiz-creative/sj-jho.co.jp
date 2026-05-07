@@ -1,0 +1,58 @@
+@charset "utf-8";
+@use "./base" as *;
+@use "./components" as *;
+@use "./utilities" as *;
+
+/* ※画像関係の変数はmeta.phpから（WPやPHPの変数が効かない為） */
+:root {
+    --origin-width: 1366;
+    --header-h: 90px;
+    --header-h-sp: 60px;
+
+    /* font */
+    --font-sans: "Zen Kaku Gothic New", "游ゴシック体", "Yu Gothic", 'YuGothic', "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro", "メイリオ", 'Meiryo', "MS Pゴシック", "MS PGothic", 'sans-serif';
+    --font-mont: "Montserrat", sans-serif;
+
+    /* color */
+    --color-basic: #482C2C;
+    --color-main: #64B6A4;
+    --color-accent: #F8AFB9;
+    --color-light-gray: #F1F1EE;
+    --color-accent-link: #68a8dd;
+
+    --color-green-gray: #C9DAD9;
+    --color-beige: #f4f4f4;
+    --color-pale-green: #E3F1EC;
+    --color-pale-mint: #E6F1EE;
+    --color-pale-pink: #FDEDF7;
+    --color-pale-yellow: #F8EBD2;
+
+    --gradient-green-start: #6FC9B5;
+    --gradient-green-via: #A2ECDC;
+    --gradient-green-end: #8EE2D0;
+    --gradient-pink-start: #E98D95;
+    --gradient-pink-end: #F8AFB9;
+    --gradient-orange-start: #F1BC62;
+    --gradient-orange-end: #FAD893;
+
+    --post-theme-color: var(--color-main); /* 投稿のテーマカラー */
+}
+
+/*==================================================
+** loading
+==================================================*/
+.l-loading {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &-obj {}
+
+    @at-root body#top-contents & {}
+}

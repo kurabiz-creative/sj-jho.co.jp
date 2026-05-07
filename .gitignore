@@ -1,0 +1,16 @@
+node_modules
+.DS_Store
+_notes
+all_in_one_migration_files
+
+/wp-content/themes/twentytwentyfive
+/wp-content/themes/twentytwentyfour
+/wp-content/themes/twentytwentythree
+/wp-content/themes/twentytwentytwo
+/wp-content/themes/twentytwentyone
+/wp-content/themes/twentytwenty
+
+/wp-content/plugins
+/wp-content/uploads
+
+__bak/

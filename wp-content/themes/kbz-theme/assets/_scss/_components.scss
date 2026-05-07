@@ -1,0 +1,147 @@
+/*
+    components：共通のパーツのみ
+*/
+@tailwind components;
+@layer components {
+    /*==================================================
+    ** layout
+    ==================================================*/
+    body.is-loading, body.no-scroll {
+        overflow: hidden !important;
+        width: 100% !important;
+        height: 100% !important;
+        -ms-touch-action: none;
+        touch-action: none;
+        -webkit-overflow-scrolling: auto;
+    }
+    body.no-scroll .l-fixed {
+        display: none !important;
+    }
+
+    /* .breadcrumbs > * {
+        @apply inline-flex items-center
+    } */
+
+    /*==================================================
+    ** icon
+    ==================================================*/
+    .m-ico {
+        @apply flex-none relative z-[1] transition duration-500 inline-block align-top mask-no-repeat mask-center mask-contain;
+    }
+
+    /*==================================================
+    ** button
+    ==================================================*/
+    .m-btn {
+        @apply relative overflow-hidden inline-flex align-top text-white hover:text-white
+        w-auto h-[3.125em] px-[1.125em] leading-normal
+        transition-all duration-500;
+    }
+
+    .m-btn.bg-grad-green {
+        @apply bg-gradient-to-r from-gradient-green-end via-gradient-green-start to-gradient-green-end
+        bg-[position:100%_50%] bg-[size:300%_100%];
+    }
+    .m-btn.bg-grad-orange {
+        @apply bg-gradient-to-r from-gradient-orange-end via-gradient-orange-start to-gradient-orange-end
+        bg-[position:100%_50%] bg-[size:300%_100%];
+    }
+    .m-btn.bg-grad-pink {
+        @apply bg-gradient-to-r from-gradient-pink-end via-gradient-pink-start to-gradient-pink-end
+        bg-[position:100%_50%] bg-[size:300%_100%];
+    }
+    .m-btn.bg-grad-green:not(.no-hover-grad),
+    .m-btn.bg-grad-orange:not(.no-hover-grad),
+    .m-btn.bg-grad-pink:not(.no-hover-grad) {
+        @apply hover:bg-[position:0_50%];
+    }
+
+    .m-btn[disabled],
+    .m-btn.is-disabled {
+        @apply pointer-events-none from-[#ECECEC] via-[#CFCFCF] to-[#ECECEC];
+    }
+
+    .m-btn .m-ico {
+        @apply right-0 flex-none w-[1.125em] h-[1.125em] ml-[0.625em] duration-[400ms];
+    }
+    .m-btn:has(input),
+    .m-btn:has(button[type="submit"]) {
+        @apply p-0 border-0;
+    }
+    .m-btn:has(input) .m-ico ,
+    .m-btn:has(button[type="submit"]) .m-ico {
+        @apply absolute right-[1.125em] inset-y-0 my-auto;
+    }
+    .m-btn input,
+    .m-btn button[type="submit"] {
+        @apply z-[1] pl-[1.125em] pr-[2.875em] flex-grow self-stretch bg-transparent whitespace-normal leading-[inherit];
+    }
+
+
+    /*==================================================
+    ** list & text
+    ==================================================*/
+    .m-ul-list {
+        @apply pl-[1em] indent-[-1em] space-y-[0.25em];
+    }
+    .m-ul-list > li::before {
+        content: "・";
+    }
+
+    .m-ol-list {
+        @apply pl-[1.25em] list-decimal space-y-[0.25em];
+    }
+
+    .m-ul-list a,
+    .m-ol-list a {
+        @apply inline underline opacity-100 hover:opacity-70;
+        color: var(--color-accent-link);
+    }
+
+    .m-notice-text {
+        padding-left: 1em;
+        text-indent: -1em;
+    }
+
+
+    /*==================================================
+    ** table
+    ==================================================*/
+    /* デフォルトテーブル */
+    .m-tbl table {
+        @apply w-full table-fixed;
+    }
+    .m-tbl caption {
+        @apply sr-only;
+    }
+    .m-tbl th {
+        @apply relative font-medium border-b border-main;
+    }
+    .m-tbl td {
+        @apply relative border-b border-[#D4E6E3] px-1.5;
+    }
+    .m-tbl td a {
+        @apply underline text-accent-link hover:text-main;
+    }
+    .m-tbl th, .m-tbl td {
+        @apply py-4 md:py-6;
+    }
+
+    .m-tbl.type-row-xs colgroup,
+    .m-tbl.type-row-xs thead {
+        @apply max-sm:hidden;
+    }
+    .m-tbl.type-row-xs th {
+        @apply max-sm:pb-1.5 max-sm:border-b-0;
+    }
+    .m-tbl.type-row-xs td {
+        @apply max-sm:pt-0 max-sm:border-b max-sm:border-main;
+    }
+    .m-tbl.type-row-xs th,
+    .m-tbl.type-row-xs td {
+        @apply max-sm:block max-sm:w-full max-sm:px-3.5;
+    }
+    .m-tbl.tbl-legal th {
+        @apply sm:w-[200px];
+    }
+}
