@@ -26,7 +26,7 @@ jobs:
           # サーバーのルートなら ./public_html/ など
           # 特定のテーマフォルダなら ./public_html/wp-content/themes/my-theme/ など
           # ※必ず最後にスラッシュ / を付けてください
-          local-dir: ./wp-content/themes/japanhoken/
+          local-dir: ./wp-content/themes/kbz-theme/
           server-dir: /kbzdemo.xsrv.jp/public_html/japanhoken/wp-content/themes/kbz-theme/
 
           # Gitで除外しているファイル(.gitignore)はアップロードしない設定
