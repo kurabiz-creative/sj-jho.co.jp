@@ -1,0 +1,59 @@
+name: Auto Deploy via FTP
+
+on:
+  push:
+    branches:
+      - develop  # developブランチに変更があった時だけ動く
+
+jobs:
+  web-deploy:
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get latest code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.DEV_FTP_SERVER }}
+          username: ${{ secrets.DEV_FTP_USERNAME }}
+          password: ${{ secrets.DEV_FTP_PASSWORD }}
+
+          # 【重要】アップロード先のフォルダ指定
+          # サーバーのルートなら ./public_html/ など
+          # 特定のテーマフォルダなら ./public_html/wp-content/themes/my-theme/ など
+          # ※必ず最後にスラッシュ / を付けてください
+          local-dir: ./wp-content/themes/kbz-theme/
+          server-dir: /kbzdemo.xsrv.jp/public_html/japanhoken/wp-content/themes/kbz-theme/
+
+          # Gitで除外しているファイル(.gitignore)はアップロードしない設定
+
+          exclude: |
+            **/.git/**
+            **/.github/**
+            **/node_modules/**
+            **/.DS_Store
+            _notes/**
+            all_in_one_migration_files/**
+            wp-content/themes/twentytwentyfive/**
+            wp-content/themes/twentytwentyfour/**
+            wp-content/themes/twentytwentythree/**
+            wp-content/themes/twentytwentytwo/**
+            wp-content/themes/twentytwentyone/**
+            wp-content/themes/twentytwenty/**
+            wp-content/plugins/**
+            wp-content/uploads/**
+            **/parts/gtm-body.php
+            **/parts/gtm-meta.php
+            __bak/**
+            .git-ftp-ignore
+            .gitignore
+            docker-compose.yml
+            Dockerfile
+            postcss.config.js
+            package.json
+            package-lock.json
+            tailwind.config.js
