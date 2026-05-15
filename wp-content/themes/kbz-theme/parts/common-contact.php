@@ -25,7 +25,7 @@
                 <div class="bg-white shrink-0 flex items-center justify-center align-top aspect-square w-[1.5715em] mr-[0.43em] rounded-full">
                     <i class="m-ico bg-accent aspect-square w-[48%] [mask-image:var(--icon-msg)] transition-all duration-300 group-hover:bg-green"></i>
                 </div>
-                <span class="font-mont tracking-wide">お問い合わせフォーム</span>
+                <span class="tracking-wide">お問い合わせフォーム</span>
             </a>
         </div>
         <p class="mt-6">受付時間：平日9時〜17時30分<span class="inline-block">（休業日：土・日・祝）</span></p>
