@@ -28,32 +28,32 @@
     </ul>
     <ul class="sitemap-list">
         <li class="break-inside-avoid">
-            <a href="<?php echo home_url('/info-indivs/'); ?>" class="sitemap-link">
+            <a href="<?php echo home_url('/for-indiv/'); ?>" class="sitemap-link">
                 <div class="text">個人のお客さま</div>
             </a>
         </li>
         <li class="break-inside-avoid">
-            <a href="<?php echo home_url('/info-corp/'); ?>" class="sitemap-link">
+            <a href="<?php echo home_url('/for-corp/'); ?>" class="sitemap-link">
                 <div class="text">法人のお客さま</div>
             </a>
         </li>
         <li class="break-inside-avoid">
-            <a href="<?php echo home_url('/info-group/'); ?>" class="sitemap-link">
+            <a href="<?php echo home_url('/for-group/'); ?>" class="sitemap-link">
                 <div class="text">団体のお客さま</div>
             </a>
             <ul class="-mt-1.5">
                 <li class="break-inside-avoid">
-                    <a href="<?php echo home_url('/info-group/okayama-u/'); ?>" class="sitemap-link !py-1 !text-xs font-normal before:hidden">
+                    <a href="<?php echo home_url('/for-group/okayama-u/'); ?>" class="sitemap-link !py-1 !text-xs font-normal before:hidden">
                         <div class="text">岡山大学会員さま専用サイト</div>
                     </a>
                 </li>
                 <li class="break-inside-avoid">
-                    <a href="<?php echo home_url('/info-group/dental/'); ?>" class="sitemap-link !py-1 !text-xs font-normal before:hidden">
+                    <a href="<?php echo home_url('/for-group/dental/'); ?>" class="sitemap-link !py-1 !text-xs font-normal before:hidden">
                         <div class="text">歯科医師会会員さま専用サイト</div>
                     </a>
                 </li>
                 <li class="break-inside-avoid">
-                    <a href="<?php echo home_url('/info-group/kensikai/'); ?>" class="sitemap-link !py-1 !text-xs font-normal before:hidden">
+                    <a href="<?php echo home_url('/for-group/kensikai/'); ?>" class="sitemap-link !py-1 !text-xs font-normal before:hidden">
                         <div class="text">けんし会会員さま専用サイト</div>
                     </a>
                 </li>

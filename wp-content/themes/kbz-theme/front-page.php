@@ -37,7 +37,7 @@ get_header();
             before:absolute before:left-1/2 before:-translate-x-1/2 before:-top-px md:before:-top-12 lg:before:top-[-8%] 3xl:before:top-[-15%] before:z-0 before:block before:aspect-[1366/230] before:w-full sm:before:min-w-[768px] md:before:min-w-[1366px] before:bg-white before:[mask-image:var(--clip-round)] before:mask-center before:mask-no-repeat">
             <div class="container">
                 <div class="flex flex-col md:flex-row justify-center space-y-6 md:space-y-0 md:space-x-6 lg:space-x-11 max-w-[58.125rem] mx-auto">
-                    <a href="<?php echo home_url('/info-group/okayama-u/'); ?>" class="group flex gap-x-5 items-center md:flex-col md:items-start hover:text-current">
+                    <a href="<?php echo home_url('/for-group/okayama-u/'); ?>" class="group flex gap-x-5 items-center md:flex-col md:items-start hover:text-current">
                         <div class="order-2 flex-1 md:mt-6 md:text-center">
                             <div class="text-xl lg:text-2xl leading-normal text-dark-green2 underline decoration-1 decoration-transparent underline-offset-4 transition-all duration-300 group-hover:decoration-current">
                                 法人のお客さま
@@ -56,7 +56,7 @@ get_header();
                             </div>
                         </div>
                     </a>
-                    <a href="<?php echo home_url('/info-group/okayama-u/'); ?>" class="group flex gap-x-5 items-center md:flex-col md:items-start hover:text-current">
+                    <a href="<?php echo home_url('/for-group/okayama-u/'); ?>" class="group flex gap-x-5 items-center md:flex-col md:items-start hover:text-current">
                         <div class="order-2 flex-1 md:mt-6 md:text-center">
                             <div class="text-xl lg:text-2xl leading-normal text-dark-green2 underline decoration-1 decoration-transparent underline-offset-4 transition-all duration-300 group-hover:decoration-current">
                                 個人のお客さま
@@ -75,7 +75,7 @@ get_header();
                             </div>
                         </div>
                     </a>
-                    <a href="<?php echo home_url('/info-group/okayama-u/'); ?>" class="group flex gap-x-5 items-center md:flex-col md:items-start hover:text-current">
+                    <a href="<?php echo home_url('/for-group/okayama-u/'); ?>" class="group flex gap-x-5 items-center md:flex-col md:items-start hover:text-current">
                         <div class="order-2 flex-1 md:mt-6 md:text-center">
                             <div class="text-xl lg:text-2xl leading-normal text-dark-green2 underline decoration-1 decoration-transparent underline-offset-4 transition-all duration-300 group-hover:decoration-current">
                                 団体のお客さま
