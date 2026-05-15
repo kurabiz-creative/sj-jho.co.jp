@@ -7,7 +7,7 @@ get_template_part('parts/meta');
 	<?php get_template_part('parts/gtm', 'body'); ?>
 
     <header id="header" class="l-header group/header fixed z-50 inset-x-0 top-0">
-        <div class="relative z-[1] flex items-center gap-x-4 h-[var(--header-h-sp)] lg:h-[var(--header-scroll-h)] xl:h-[var(--header-h)] xl:group-[.is-scroll]/header:h-[var(--header-scroll-h)] bg-light-green transition-all duration-300">
+        <div class="relative z-[1] flex items-center gap-x-4 h-[var(--header-h-sp)] lg:h-[var(--header-h)] bg-light-green transition-all duration-300">
             <<?php if(is_front_page()){ echo 'h1'; }else{ echo 'div'; } ?> class="logo pl-3.5 xl:pl-7">
                 <a href="<?php echo home_url(); ?>" class="hover:opacity-70"><img class="w-[clamp(210px,30vw,430px)]" src="<?php echo _get_file('/assets/img/logo.png'); ?>" alt="株式会社ジャパン保険岡山"></a>
             </<?php if(is_front_page()){ echo 'h1'; }else{ echo 'div'; } ?>>

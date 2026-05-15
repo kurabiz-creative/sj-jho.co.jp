@@ -2,12 +2,12 @@
 /* ※画像関係の変数はmeta.phpから（WPやPHPの変数が効かない為） */
 :root {
   --origin-width: 1366;
-  --header-h: 6.25rem; /* 100px */
+  --header-h: 4.6875rem; /* 75px */
   --header-h-sp: 3.375rem; /* 54px */
-  --header-bot-h: 6rem; /* 96px */
+  --header-bot-h: 3.75rem; /* 60px */
   --header-scroll-h: 4.6875rem; /* 75px */
   --header-bot-scroll-h: 3.75rem; /* 60px */
-  --header-scroll-total: calc(var(--header-scroll-h) + var(--header-bot-scroll-h)); /* 135px */
+  --header-total-h: calc(var(--header-h) + var(--header-bot-h)); /* 135px */
   --fixed-btn-h-sp: 3.125rem; /* 50px */
   /* font */
   --font-sans: "Zen Kaku Gothic New", "游ゴシック体", "Yu Gothic", "YuGothic", "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro", "メイリオ", "Meiryo", "MS Pゴシック", "MS PGothic", "sans-serif";
@@ -518,7 +518,7 @@ main {
 }
 @screen lg {
   main {
-    @apply mt-[var(--header-scroll-total)];
+    @apply mt-[var(--header-total-h)];
   }
 }
 @screen xl {
@@ -527,7 +527,7 @@ main {
   }
 }
 header.is-scroll ~ main {
-  @apply xl:mt-[var(--header-scroll-total)];
+  @apply xl:mt-[var(--header-total-h)];
 }
 
 /*==================================================

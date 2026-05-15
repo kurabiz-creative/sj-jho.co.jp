@@ -3,7 +3,7 @@ global $fullscreen_id, $fv, $fv_title;
 
 $fv_img = get_field('top_fv');
 ?>
-<section class="top-fv-wrap md:h-[calc(100dvh-(var(--header-scroll-total)))]">
+<section class="top-fv-wrap md:h-[calc(100dvh-(var(--header-total-h)))]">
     <?php if($fv_img): ?>
     <div class="fv-slider splide h-full" aria-label="TOPのファストビュー">
         <div class="splide__track h-full">

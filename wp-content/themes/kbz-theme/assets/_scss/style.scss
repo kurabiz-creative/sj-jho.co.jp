@@ -130,14 +130,14 @@
 main {
     @apply mt-[var(--header-h-sp)];
     @screen lg {
-        @apply mt-[var(--header-scroll-total)];
+        @apply mt-[var(--header-total-h)];
     }
     @screen xl {
         @apply mt-[calc(var(--header-h)+var(--header-bot-h))] transition-all duration-300;
     }
 
     @at-root header.is-scroll ~ & {
-        @apply xl:mt-[var(--header-scroll-total)];
+        @apply xl:mt-[var(--header-total-h)];
     }
 }
 
